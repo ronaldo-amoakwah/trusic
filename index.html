@@ -1,26 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>Trusic</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <meta name="theme-color" content="#4f46e5" />
 </head>
 <body>
 
-<h1>Trusic App</h1>
-<p>This is the app shell for installation.</p>
+<header class="topbar">
+  <h1>Trusic</h1>
+  <div class="top-actions">
+    <button id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
+  </div>
+</header>
 
-<button onclick="demoLogin()">Login (Demo)</button>
-<button onclick="demoGuest()">Continue as Guest</button>
+<main class="container">
+
+  <!-- Auth Card -->
+  <div class="card" id="authCard">
+    <h2>Welcome to Trusic</h2>
+    <p>This is the app shell (demo mode).</p>
+
+    <form id="loginForm">
+      <input id="username" placeholder="Username" required />
+      <input id="password" type="password" placeholder="Password" required />
+      <button type="submit">Login (Demo)</button>
+      <button type="button" class="ghost" onclick="guest()">Continue as Guest</button>
+      <p>
+        <a href="#" onclick="showSignup();return false;">Sign up</a>
+      </p>
+    </form>
+
+    <form id="signupForm" class="hidden">
+      <input id="newUsername" placeholder="Username" required />
+      <input id="newPassword" type="password" placeholder="Password" required />
+      <button type="submit">Create account (Demo)</button>
+      <p>
+        <a href="#" onclick="showLogin();return false;">Back to login</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- Logged-in Home -->
+  <div class="card hidden" id="homeCard">
+    <h2 id="welcomeText"></h2>
+    <p>This is the PWA shell. Backend features run on your PHP host.</p>
+  </div>
+
+</main>
 
 <script>
-function demoLogin() {
-  localStorage.setItem("currentUser","DemoUser");
-  alert("This is demo mode. Backend features only work on localhost or your PHP host.");
-}
-function demoGuest() {
-  localStorage.setItem("currentUser","Guest");
-  alert("Demo guest mode. Feed works only on PHP hosting.");
-}
+  const authCard = document.getElementById("authCard");
+  const homeCard = document.getElementById("homeCard");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  function showSignup() {
+    document.getElementById("loginForm").classList.add("hidden");
+    document.getElementById("signupForm").classList.remove("hidden");
+  }
+
+  function showLogin() {
+    document.getElementById("signupForm").classList.add("hidden");
+    document.getElementById("loginForm").classList.remove("hidden");
+  }
+
+  function guest() {
+    localStorage.setItem("currentUser", "Guest_" + Math.floor(Math.random() * 9999));
+    localStorage.setItem("isGuest", "true");
+    updateUI();
+  }
+
+  function logout() {
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("isGuest");
+    updateUI();
+  }
+
+  function updateUI() {
+    const user = localStorage.getItem("currentUser");
+    if (user) {
+      authCard.classList.add("hidden");
+      homeCard.classList.remove("hidden");
+      document.getElementById("welcomeText").innerText = "Welcome, " + user;
+      logoutBtn.style.display = "inline-block";
+    } else {
+      authCard.classList.remove("hidden");
+      homeCard.classList.add("hidden");
+      logoutBtn.style.display = "none";
+    }
+  }
+
+  // Demo-only auth (frontend)
+  document.getElementById("loginForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const user = document.getElementById("username").value.trim();
+    if (!user) return;
+    localStorage.setItem("currentUser", user);
+    updateUI();
+  });
+
+  document.getElementById("signupForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const user = document.getElementById("newUsername").value.trim();
+    if (!user) return;
+    localStorage.setItem("currentUser", user);
+    updateUI();
+  });
+
+  updateUI();
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+  }
 </script>
 
 </body>
