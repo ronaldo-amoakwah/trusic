@@ -3,45 +3,23 @@
 <head>
   <title>Trusic</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body{margin:0;height:100vh;display:grid;place-items:center;background:#0b1220;color:#fff;font-family:system-ui}
-    .card{background:#0f172a;padding:24px;border-radius:16px;width:min(92vw,380px)}
-    input,button{width:100%;padding:12px;border-radius:10px;border:1px solid #1f2933;background:#020617;color:#fff;margin:6px 0}
-    button{background:#4f46e5;border:none}
-    .ghost{background:transparent;border:1px dashed #4f46e5}
-    .hidden{display:none}
-  </style>
 </head>
 <body>
 
-<div class="card">
-  <h1>Trusic</h1>
-  <p>A place to cure your boredom.</p>
+<h1>Trusic App</h1>
+<p>This is the app shell for installation.</p>
 
-  <form action="login.php" method="POST" id="login">
-    <input name="username" placeholder="Username" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button>Login</button>
-    <button type="button" class="ghost" onclick="guest()">Continue as Guest</button>
-    <p><a href="#" onclick="showSignup()">Sign up</a></p>
-  </form>
-
-  <form action="register.php" method="POST" id="signup" class="hidden">
-    <input name="username" placeholder="Username" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button>Create account</button>
-    <p><a href="#" onclick="showLogin()">Back</a></p>
-  </form>
-</div>
+<button onclick="demoLogin()">Login (Demo)</button>
+<button onclick="demoGuest()">Continue as Guest</button>
 
 <script>
-function showSignup(){ login.classList.add("hidden"); signup.classList.remove("hidden"); }
-function showLogin(){ signup.classList.add("hidden"); login.classList.remove("hidden"); }
-
-function guest(){
-  localStorage.setItem("currentUser","Guest_"+Math.floor(Math.random()*9999));
-  localStorage.setItem("isGuest","true");
-  location.href="feed.php";
+function demoLogin() {
+  localStorage.setItem("currentUser","DemoUser");
+  alert("This is demo mode. Backend features only work on localhost or your PHP host.");
+}
+function demoGuest() {
+  localStorage.setItem("currentUser","Guest");
+  alert("Demo guest mode. Feed works only on PHP hosting.");
 }
 </script>
 
